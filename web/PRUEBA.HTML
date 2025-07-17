@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>PHYTON - Tienda de Gorras</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      font-family: Arial;
+      background:#e0e0e0;
+      text-align:center;
+    }
+
+    .container {
+      flex: 1;
+      width: 90%;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      background:#388E3C;
+      color:#fff;
+      padding:20px 0
+    }
+
+    .nav-buttons {
+      display:none;
+      margin:10px 0
+    }
+
+    .nav-buttons button {
+      margin:0 5px;
+      padding:8px 12px;
+      background:#FFC107;
+      border:none;
+      border-radius:5px;
+      cursor:pointer
+    }
+
+    .form-section,
+    .product-container,
+    #gorra-menu,
+    #pedido-domicilio,
+    #carrito,
+    #perfil,
+    #pedidos,
+    #conocenos,
+    #sugerencias {
+      display: none
+    }
+
+    .product {
+      background:#fff;
+      border:1px solid #ccc;
+      margin:15px 0;
+      padding:15px;
+      border-radius:10px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.2);
+      transition:transform .2s
+    }
+
+    .product:hover {
+      transform:scale(1.03)
+    }
+
+    button {
+      background:#F57C00;
+      color:#fff;
+      border:none;
+      border-radius:5px;
+      padding:8px 12px;
+      cursor:pointer
+    }
+
+    footer {
+      background:#333;
+      color:#fff;
+      text-align:center;
+      padding:20px 0;
+    }
+
+    .order-list {
+      list-style:none;
+      padding:0;
+      text-align:left
+    }
+
+    .order-item {
+      background:#fff;
+      margin:10px 0;
+      padding:10px;
+      border-radius:5px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1)
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PHYTON - Tienda de Gorras</h1>
+    <div class="nav-buttons" id="nav-buttons">
+      <button onclick="showSection('product-container')">Catálogo</button>
+      <button onclick="showSection('carrito')">Carrito</button>
+      <button onclick="showSection('perfil')">Perfil</button>
+      <button onclick="showSection('pedidos')">Pedidos</button>
+      <button onclick="showSection('conocenos')">Conócenos</button>
+      <button onclick="showSection('sugerencias')">Sugerencias</button>
+      <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="login-section" class="form-section">
+      <h2>Iniciar Sesión</h2>
+      <form id="login-form">
+        <input placeholder="Usuario" id="username" required><br><br>
+        <input type="password" placeholder="Contraseña" id="password" required><br><br>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+    </div>
+
+    <div id="product-container" class="product-container">
+      <h2>Catálogo</h2>
+      <div class="product" onclick="showGorras('beisbol')">
+        <h3>Gorras de Béisbol</h3>
+        <img src="gorra_beisbol.jpg" width="100px">
+        <button>Ver Gorras</button>
+      </div>
+      <div class="product" onclick="showGorras('trucker')">
+        <h3>Gorras Trucker</h3>
+        <img src="gorra_trucker.jpg" width="100px">
+        <button>Ver Gorras</button>
+      </div>
+      <div class="product" onclick="showGorras('snapback')">
+        <h3>Gorras Snapback</h3>
+        <img src="gorra_snapback.jpg" width="100px">
+        <button>Ver Gorras</button>
+      </div>
+    </div>
+
+    <div id="gorra-menu" class="form-section">
+      <h2 id="gorra-title"></h2>
+      <div id="gorra-list"></div>
+      <p><strong>Total: $<span id="total-price">0.00</span></strong></p>
+      <button onclick="backToCatalog()">Volver al Catálogo</button>
+    </div>
+
+    <div id="pedido-domicilio" class="form-section">
+      <h2>Pedido a Domicilio</h2>
+      <form id="pedido-form">
+        <input placeholder="Dirección" id="address" required><br><br>
+        <input placeholder="Método de Pago" id="paymentMethod" required><br><br>
+        <input type="email" placeholder="Correo Electrónico" id="emailPurchase" required><br><br>
+        <input type="tel" placeholder="Teléfono" id="phonePurchase" required><br><br>
+        <input type="number" placeholder="Unidades" id="units" required min="1" value="1"><br><br>
+        <button type="submit">Confirmar Pedido</button>
+      </form>
+      <button onclick="showSection('gorra-menu')">Volver</button>
+    </div>
+
+    <div id="carrito" class="form-section">
+      <h2>Carrito</h2>
+      <ul id="cart-list"><li>Tu carrito está vacío.</li></ul>
+      <p><strong>Total: $<span id="cart-total">0.00</span></strong></p>
+      <button onclick="showSection('product-container')">Volver al Catálogo</button>
+    </div>
+
+    <div id="perfil" class="form-section">
+      <h2>Perfil</h2>
+      <p><b>Usuario:</b> <span id="profile-username"></span></p>
+      <p><b>Correo:</b> <span id="profile-email"></span></p>
+      <button onclick="showSection('product-container')">Volver</button>
+    </div>
+
+    <div id="pedidos" class="form-section">
+      <h2>Pedidos</h2>
+      <ul id="order-list" class="order-list"><li>No hay pedidos realizados.</li></ul>
+      <button onclick="showSection('product-container')">Volver</button>
+    </div>
+
+    <div id="conocenos" class="form-section">
+      <h2>Conócenos</h2>
+      <p>
+        Fundada en 2025, <strong>PHYTON</strong> nació de la amistad entre dos jóvenes emprendedores: <strong>MICLO</strong> y <strong>CHARAL</strong>.
+        Su pasión por las gorras únicas, cómodas y con estilo los impulsó a crear una tienda diferente, enfocada en ofrecer productos con personalidad,
+        calidad premium y atención cercana al cliente.
+      </p>
+      <p>
+        Todo comenzó en un pequeño taller, donde diseñaban sus primeros modelos a mano. Con el tiempo, la creatividad y el esfuerzo constante
+        les permitió crecer, expandir su catálogo y llegar a más personas que, como ellos, valoran una gorra como parte esencial de su identidad.
+      </p>
+      <p>
+        Hoy, PHYTON no solo es una tienda en línea, es una comunidad de amantes del estilo urbano que se atreven a destacar. Cada diseño cuenta
+        una historia, y cada cliente es parte de ella. Gracias por ser parte de esta aventura.
+      </p>
+      <button onclick="showSection('product-container')">Volver</button>
+    </div>
+
+    <div id="sugerencias" class="form-section">
+      <h2>Sugerencias</h2>
+      <form id="suggestion-form">
+        <textarea placeholder="Tu sugerencia..." id="suggestion" required></textarea><br><br>
+        <button type="submit">Enviar</button>
+      </form>
+      <button onclick="showSection('product-container')">Volver</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 PHYTON | Creado por <strong>MICLO</strong> y <strong>CHARAL</strong></p>
+  </footer>
+
+  <script>
+    const users = [
+      { username:"charal", email:"charal@example.com", password:"1212" },
+      { username:"miclovin", email:"miclovin@example.com", password:"1812*" }
+    ];
+    let cart=[], orders=[], totalPrice=0;
+    let currentUser=null;
+
+    window.onload = () => {
+      showSection('login-section');
+    };
+
+    document.getElementById('login-form').addEventListener('submit', e=>{
+      e.preventDefault();
+      const u = document.getElementById('username').value,
+            p = document.getElementById('password').value;
+      const usr = users.find(x=>x.username===u && x.password===p);
+      if(usr){
+        currentUser=usr;
+        alert('¡Bienvenido '+u+'!');
+        document.getElementById('profile-username').textContent=u;
+        document.getElementById('profile-email').textContent=usr.email;
+        document.getElementById('nav-buttons').style.display='block';
+        showSection('product-container');
+      } else alert('Usuario o contraseña incorrectos');
+    });
+
+    document.getElementById('suggestion-form').addEventListener('submit', e=>{
+      e.preventDefault();
+      alert('Gracias por tu sugerencia: '+document.getElementById('suggestion').value);
+      showSection('product-container');
+    });
+
+    function showGorras(type){
+      let gorras=[];
+      const t = document.getElementById('gorra-title');
+      if(type==='beisbol'){
+        t.textContent='Gorras de Béisbol';
+        gorras=[{name:'Gorra Béisbol Clásica',price:15,image:'gorra_beisbol_clasica.jpg'},
+                {name:'Gorra Béisbol Deportiva',price:20,image:'gorra_beisbol_deportiva.jpg'},
+                {name:'Gorra Béisbol Verano',price:18,image:'gorra_beisbol_verano.jpg'},
+                {name:'Gorra Béisbol Ajustable',price:22,image:'gorra_beisbol_ajustable.jpg'}];
+      } else if(type==='trucker'){
+        t.textContent='Gorras Trucker';
+        gorras=[{name:'Gorra Trucker Clásica',price:16,image:'gorra_trucker_clasica.jpg'},
+                {name:'Gorra Trucker Ajustable',price:21,image:'gorra_trucker_ajustable.jpg'},
+                {name:'Gorra Trucker Verano',price:19,image:'gorra_trucker_verano.jpg'},
+                {name:'Gorra Trucker Deportiva',price:24,image:'gorra_trucker_deportiva.jpg'}];
+      } else {
+        t.textContent='Gorras Snapback';
+        gorras=[{name:'Gorra Snapback Clásica',price:17,image:'gorra_snapback_clasica.jpg'},
+                {name:'Gorra Snapback Ajustable',price:23,image:'gorra_snapback_ajustable.jpg'},
+                {name:'Gorra Snapback Estilo',price:20,image:'gorra_snapback_estilo.jpg'},
+                {name:'Gorra Snapback Personalizada',price:25,image:'gorra_snapback_personalizada.jpg'}];
+      }
+      const list = document.getElementById('gorra-list');
+      list.innerHTML=''; totalPrice=0;
+      gorras.forEach(g=>{
+        list.innerHTML+=`
+          <div class="product">
+            <h3>${g.name}</h3>
+            <img src="${g.image}" width="100px">
+            <p>Precio: $${g.price.toFixed(2)}</p>
+            <button onclick="addToCart('${g.name}',${g.price})">Agregar</button>
+            <button onclick="buyNow('${g.name}',${g.price})">Comprar</button>
+          </div>`;
+      });
+      document.getElementById('total-price').textContent=totalPrice.toFixed(2);
+      showSection('gorra-menu');
+    }
+
+    function addToCart(name, price){
+      cart.push({name,price});
+      totalPrice+=price;
+      updateCart();
+      alert(`${name} agregado. Total: $${totalPrice.toFixed(2)}`);
+    }
+
+    function updateCart(){
+      const cl = document.getElementById('cart-list');
+      cl.innerHTML = cart.length>0 ? cart.map(i=>`<li>${i.name} - $${i.price.toFixed(2)}</li>`).join('') : '<li>Tu carrito está vacío.</li>';
+      document.getElementById('cart-total').textContent=totalPrice.toFixed(2);
+    }
+
+    function buyNow(name, price){
+      document.getElementById('pedido-form').onsubmit = function(e){
+        e.preventDefault();
+        confirmPedido(name, price);
+      };
+      showSection('pedido-domicilio');
+    }
+
+    function confirmPedido(name, price){
+      const u = parseInt(document.getElementById('units').value);
+      const total = (price*u).toFixed(2);
+      const dt = new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString();
+      orders.push({product:name,units:u,total,delivery:dt});
+      alert(`Pedido confirmado:\n${u} x ${name}\nTotal: $${total}\nEntrega: ${dt}`);
+      showSection('pedidos');
+      refreshOrders();
+    }
+
+    function refreshOrders(){
+      const ol = document.getElementById('order-list');
+      if(orders.length){
+        ol.innerHTML = orders.map(o=>`
+          <li class="order-item">
+            <strong>${o.units} x ${o.product}</strong><br>
+            Total: $${o.total}<br>
+            Fecha de entrega: ${o.delivery}
+          </li>`).join('');
+      }
+    }
+
+    function showSection(id){
+      document.querySelectorAll('.form-section, .product-container').forEach(e=>e.style.display='none');
+      document.getElementById(id).style.display='block';
+    }
+
+    function backToCatalog(){
+      showSection('product-container');
+    }
+
+    function logout(){
+      alert('Sesión cerrada');
+      currentUser=null;
+      cart=[]; orders=[]; totalPrice=0;
+      document.getElementById('nav-buttons').style.display='none';
+      showSection('login-section');
+    }
+  </script>
+</body>
+</html>
